@@ -24,7 +24,8 @@ pipeline {
     }               
     stage('Push Image to Docker Hub') {         
       steps{                            
-	sh 'sudo docker push yaseenshareef7/myregistry:$BUILD_NUMBER'                 echo 'Push Image Completed'       
+	sh 'sudo docker push yaseenshareef7/myregistry:$BUILD_NUMBER'                 
+	echo 'Push Image Completed'       
       }           
     }      
   } //stages 
