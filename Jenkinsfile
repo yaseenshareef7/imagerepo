@@ -1,14 +1,14 @@
 pipeline {
 environment {
-registry = "YourDockerhubAccount/YourRepository"
-registryCredential = 'dockerhub_id'
+registry = "yaseenshareef7/myregistry"
+registryCredential = 'yaseenshareef7'
 dockerImage = ''
 }
 agent any
 stages {
 stage('Cloning our Git') {
 steps {
-git 'https://github.com/YourGithubAccount/YourGithubRepository.git'
+git 'https://github.com/yaseenshareef7/imagerepo.git'
 }
 }
 stage('Building our image') {
