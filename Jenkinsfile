@@ -1,8 +1,6 @@
 pipeline {
 environment {
-registry = "yaseenshareef7/myregistry"
-registryCredential = 'yaseenshareef7'
-dockerImage = ''
+DOCKERHUB_CREDENTIALS = credentials('yaseenshareef7')
 }
 agent any
 stages {
@@ -13,23 +11,16 @@ git 'https://github.com/yaseenshareef7/imagerepo.git'
 }
 stage('Building our image') {
 steps{
-script {
-dockerImage = docker.build registry + ":$BUILD_NUMBER"
+     sh 'docker build -t yaseenshareef7/myregitry:$BUILD_NUMBER .'
 }
 }
-}
+stage('login to dockerhub')
+   steps{
+       sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 stage('Deploy our image') {
 steps{
-script {
-docker.withRegistry( '', registryCredential ) {
-dockerImage.push()
+     sh ' docker push yaseenshareef7/myregitry:$BUILD_NUMBER'
 }
-}
-}
-}
-stage('Cleaning up') {
-steps{
-sh "docker rmi $registry:$BUILD_NUMBER"
 }
 }
 }
