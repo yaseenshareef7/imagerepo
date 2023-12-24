@@ -1,37 +1,38 @@
 pipeline {   
-  agent any
-  environment {     
-    DOCKERHUB_CREDENTIALS= credentials('yaseenshareef7')     
-  }    
+  agent any  
   stages {         
     stage("Git Checkout"){           
       steps{                
-	git credentialsId: '2aa7e006-56ec-4189-ae08-ca53dc41bd30', url: 'https://github.com/yaseenshareef7/imagerepo.git'                 
+	checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/yaseenshareef7/imagerepo.git']]])       //specifying git repo branch and creds in gui pipeline  ..       
 	echo 'Git Checkout Completed'            
       }        
     }
-    stage('Build Docker Image') {         
-      steps{                
-	sh 'sudo docker build -t yaseenshareef7/myregistry:$BUILD_NUMBER .'           
-        echo 'Build Image Completed'                
-      }           
-    }
-    stage('Login to Docker Hub') {         
-      steps{                            
-	sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'                 
-	echo 'Login Completed'                
-      }           
-    }               
-    stage('Push Image to Docker Hub') {         
-      steps{                            
-	sh 'sudo docker push yaseenshareef7/myregistry:$BUILD_NUMBER'                 
-	echo 'Push Image Completed'       
-      }           
-    }      
-  } //stages 
-  post{
-    always {  
-      sh 'docker logout'           
-    }      
-  }  
-} //pipeline
+      stage('Docker Build and Tag') {
+           steps {
+              
+                sh 'docker build -t myimage:1.1 .' 
+                  sh 'docker tag myimage yaseenshareef7/myregistry:1.1'
+
+               
+          }
+        }
+     
+  stage('Publish image to Docker Hub') {
+          
+            steps {
+        withDockerRegistry([ credentialsId: "yaseenshareef7", url: "" ]) {
+          sh  'docker push yaseenshareef7/myregistry:1.1'
+        
+        }
+                  
+          }
+     	 }
+		 		 
+   stage('Deploy'){
+            steps {
+                
+                sh "docker run --name myngninx-image -d -p 9004:80 yaseenshareef7/myregistry:1.1"
+            }
+        }
+  }
+}
