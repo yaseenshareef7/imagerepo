@@ -10,8 +10,8 @@ pipeline {
       stage('Docker Build and Tag') {
            steps {
               
-                sh 'docker build -t myimage:1.1 .' 
-                  sh 'docker tag myimage yaseenshareef7/myregistry:1.1'
+                sh 'docker build -t myimage:1.2 .' 
+                  sh 'docker tag myimage yaseenshareef7/myregistry:1.2'
 
                
           }
@@ -21,7 +21,7 @@ pipeline {
           
             steps {
         withDockerRegistry([ credentialsId: "yaseenshareef7", url: "" ]) {
-          sh  'docker push yaseenshareef7/myregistry:1.1'
+          sh  'docker push yaseenshareef7/myregistry:1.2'
         
         }
                   
@@ -31,7 +31,7 @@ pipeline {
    stage('Deploy'){
             steps {
                 
-                sh "docker run --name myngninx-image -d -p 9004:80 yaseenshareef7/myregistry:1.1"
+                sh "docker run --name myngninx-image -d -p 9004:80 yaseenshareef7/myregistry:1.2"
             }
         }
   }
