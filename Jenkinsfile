@@ -1,5 +1,9 @@
 pipeline {   
-  agent any  
+  agent any 
+  environment {
+        DATE = new Date().format('yy.M')
+        TAG = "${DATE}.${BUILD_NUMBER}"
+    }
   stages {         
     stage("Git Checkout"){           
       steps{                
@@ -10,8 +14,8 @@ pipeline {
       stage('Docker Build and Tag') {
            steps {
               
-                sh 'docker build -t myimage:1.1 .' 
-                  sh 'docker tag myimage yaseenshareef7/myregistry:1.1'
+                sh 'docker build -t myimage:${TAG} .' 
+                  sh 'docker tag myimage yaseenshareef7/registry2:${TAG}'
 
                
           }
@@ -21,7 +25,7 @@ pipeline {
           
             steps {
         withDockerRegistry([ credentialsId: "yaseenshareef7", url: "" ]) {
-          sh  'docker push yaseenshareef7/myregistry:1.1'
+          sh  'docker push yaseenshareef7/registry2:${TAG}'
         
         }
                   
@@ -31,7 +35,7 @@ pipeline {
    stage('Deploy'){
             steps {
                 
-                sh "docker run --name myngninx-image -d -p 9004:80 yaseenshareef7/myregistry:1.1"
+                sh "docker run --name myngninx-image -d -p 9005:80 yaseenshareef7/registry2:${TAG}"
             }
         }
   }
