@@ -35,7 +35,7 @@ pipeline {
    stage('Deploy'){
             steps {
                 
-                sh "docker run --name myngninx-image -d -p 9005:80 yaseenshareef7/registry2:${TAG}"
+                sh "docker run -d -p 9005:80 yaseenshareef7/registry2:${TAG}"
             }
         }
   }
