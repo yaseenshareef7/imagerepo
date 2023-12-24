@@ -31,7 +31,7 @@ pipeline {
    stage('Deploy'){
             steps {
                 
-                sh "docker run -d -p 9007:80 yaseenshareef7/myregistry:1.2"
+                sh "docker run -d -p 9009:80 yaseenshareef7/myregistry:1.2"
             }
         }
   }
